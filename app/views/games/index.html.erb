@@ -1,0 +1,19 @@
+<h1>Welcome to Tic Tac Toe</h1>
+
+<div>
+  <h2>Create a New Game</h2>
+  <%= link_to 'Create Game', new_game_path, class: 'btn btn-primary' %>
+</div>
+
+<div>
+  <h2>Join a Game</h2>
+  <%= form_with url: join_games_path, method: :get, local: true do |form| %>
+    <div>
+      <%= form.label :game_id, "Enter Game URL" %>
+      <%= form.text_field :game_id, placeholder: 'Paste the game URL here', class: 'form-control' %>
+    </div>
+    <div>
+      <%= form.submit 'Join Game', class: 'btn btn-secondary' %>
+    </div>
+  <% end %>
+</div>

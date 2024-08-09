@@ -1,0 +1,14 @@
+<h1>Create a New Game</h1>
+
+<%= form_with model: @game, local: true do |form| %>
+  <div>
+    <%= form.label :creator_symbol, "Select Your Symbol" %>
+    <%= form.radio_button :creator_symbol, 'X' %> X
+    <%= form.radio_button :creator_symbol, 'O' %> O
+  </div>
+  
+  <div>
+    <%= form.submit "Create Game" %>
+  </div>
+<% end %>
+

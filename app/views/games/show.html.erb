@@ -1,0 +1,15 @@
+<%= turbo_stream_from @game %>
+
+<%# turbo_frame_tag "game" do %>
+  <div id="<%= dom_id(@game) %>">
+    <% if @game.creator && @game.joiner %>
+      <h1>Game Board</h1>
+      <%= render @game , user: Current.user %>
+    <% else %>
+      <p>Waiting for another player to join...</p>
+      <% if current_user == @game.creator %>
+        <p>Share this URL with a friend to join: <%= game_url(@game) %></p>
+      <% end %>
+    <% end %>
+  </div>
+<%# end %>

@@ -1,0 +1,25 @@
+<%# debugger %>
+  <div class="game-info">
+    <p>Current Turn: <%= game.current_symbol.upcase %></p>
+  </div>
+
+  
+  
+  <table class="tic-tac-toe-board">
+    <% game.state.each do |row_index, row| %>
+      <tr>
+        <% row.each do |col_index, cell| %>
+          <td class="cell">
+            <% if cell.nil? && user == ( game.current_symbol == game.creator_symbol ? game.creator : game.joiner) %>
+              
+              <%= link_to ' ', move_game_path(game, row: row_index, col: col_index), data:{turbo_method: :patch} %>
+
+            <% else %>
+              <%= cell %>
+            <% end %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+
