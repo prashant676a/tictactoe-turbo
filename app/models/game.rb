@@ -49,6 +49,6 @@ class Game < ApplicationRecord
     nil
   end
 
-  after_update_commit -> {broadcast_replace_later_to "games", locals: {game: self, user:Current.user == self.creator ? self.joiner : self.creator}}
+  after_update_commit -> {broadcast_replace_to "games", locals: {game: self, user:Current.user == self.creator ? self.joiner : self.creator}}
   
 end
