@@ -1,8 +1,24 @@
 <%# debugger %>
+  <% if game.finished %>
+    <h2><%= game.winner %> wins!</h2>
+    
+    <table class="tic-tac-toe-board">
+    <% game.state.each do |row_index, row| %>
+      <tr>
+        <% row.each do |col_index, cell| %>
+          <td class="cell">
+            <%= cell %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+  
+  <% else %>
   <div class="game-info">
     <p>Current Turn: <%= game.current_symbol.upcase %></p>
   </div>
-
+  
   
   
   <table class="tic-tac-toe-board">
@@ -23,3 +39,4 @@
     <% end %>
   </table>
 
+<% end %>

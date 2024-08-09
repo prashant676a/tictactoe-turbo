@@ -55,6 +55,7 @@ class GamesController < ApplicationController
   end
 
   def update
+    # broadcast_game_update(@game)
     @game.update(game_params)
     respond_to do |format|
       format.turbo_stream
@@ -63,10 +64,24 @@ class GamesController < ApplicationController
   end
 
   def move
+    
     row = params[:row].to_i
     col = params[:col].to_i
-    @game.move!(row, col)
-    redirect_to @game
+
+    if @game.move!(row, col)
+      Current.user = current_user
+      broadcast_game_update(@game)
+
+      respond_to do |format|
+        # format.turbo_stream
+        format.html{redirect_to @game}
+      end
+
+    else
+      redirect_to @game, alert: 'Invalid move.'
+    end
+
+    
   end
 
   private
@@ -89,4 +104,5 @@ class GamesController < ApplicationController
       locals: { game: game, user: Current.user == game.creator ? game.joiner : game.creator }
     )
   end
+
 end
