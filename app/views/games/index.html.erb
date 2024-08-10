@@ -1,19 +1,26 @@
-<h1>Welcome to Tic Tac Toe</h1>
+<div class="container mx-auto p-6">
+    <h1 class="text-4xl font-bold text-center mb-8">Welcome to Tic Tac Toe</h1>
 
-<div>
-  <h2>Create a New Game</h2>
-  <%= link_to 'Create Game', new_game_path, class: 'btn btn-primary' %>
-</div>
+    <%# turbo_frame_tag "new_game" do %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Create a New Game</h2>
+      <%= link_to 'Create Game',
+       new_game_path,
+      #  data: {turbo_frame: "index"} ,
+      class: 'inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
+    </div>
+    <%# end %>
 
-<div>
-  <h2>Join a Game</h2>
-  <%= form_with url: join_games_path, method: :get, local: true do |form| %>
     <div>
-      <%= form.label :game_id, "Enter Game URL" %>
-      <%= form.text_field :game_id, placeholder: 'Paste the game URL here', class: 'form-control' %>
+      <h2 class="text-2xl font-semibold mb-4">Join a Game</h2>
+      <%= form_with url: join_games_path, method: :get, local: true, html: { class: 'space-y-4' } do |form| %>
+        <div>
+          <%= form.label :game_id, "Enter Game URL", class: 'block text-sm font-medium text-gray-700' %>
+          <%= form.text_field :game_id, placeholder: 'Paste the game URL here', class: 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm' %>
+        </div>
+        <div>
+          <%= form.submit 'Join Game', class: 'w-full py-2 px-4 bg-green-600 text-white font-semibold rounded-md shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2' %>
+        </div>
+      <% end %>
     </div>
-    <div>
-      <%= form.submit 'Join Game', class: 'btn btn-secondary' %>
-    </div>
-  <% end %>
-</div>
+  </div>

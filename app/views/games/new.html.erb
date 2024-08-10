@@ -1,14 +1,22 @@
-<h1>Create a New Game</h1>
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-8">Create a New Game</h1>
 
-<%= form_with model: @game, local: true do |form| %>
-  <div>
-    <%= form.label :creator_symbol, "Select Your Symbol" %>
-    <%= form.radio_button :creator_symbol, 'X' %> X
-    <%= form.radio_button :creator_symbol, 'O' %> O
-  </div>
-  
-  <div>
-    <%= form.submit "Create Game" %>
-  </div>
-<% end %>
+    <%# turbo_frame_tag "new_game" do %>
+      <%= form_with model: @game, local: true, html: { class: 'max-w-md mx-auto p-6 bg-white rounded-lg shadow-md space-y-4' } do |form| %>
+        <div>
+          <%= form.label :creator_symbol, "Select Your Symbol", class: 'block text-sm font-medium text-gray-700' %>
+          <div class="flex items-center space-x-4 mt-2">
+            <%= form.radio_button :creator_symbol, 'X', class: 'h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500' %>
+            <%= form.label :creator_symbol_X, 'X', class: 'text-sm font-medium text-gray-900' %>
+            <%= form.radio_button :creator_symbol, 'O', class: 'h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500' %>
+            <%= form.label :creator_symbol_O, 'O', class: 'text-sm font-medium text-gray-900' %>
+          </div>
+        </div>
+        
+        <div>
+          <%= form.submit "Create Game", class: 'w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
+        </div>
+      <% end %>
+    <%# end %>
 
+  </div>

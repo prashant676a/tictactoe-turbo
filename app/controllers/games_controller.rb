@@ -3,6 +3,7 @@ class GamesController < ApplicationController
   
   before_action :authenticate_user!
   before_action :set_game, only: [:show, :update, :move]
+  before_action :ensure_joined, only: [:show]
 
 
   def index
@@ -103,6 +104,12 @@ class GamesController < ApplicationController
       partial: 'games/game',
       locals: { game: game, user: Current.user == game.creator ? game.joiner : game.creator }
     )
+  end
+
+  def ensure_joined
+    unless @game && (@game.creator == current_user || @game.joiner == current_user)
+      redirect_to games_path, alert: 'You must join the game to view it.'
+    end
   end
 
 end

@@ -1,42 +1,39 @@
-<%# debugger %>
+<% if game.finished || game.state.values.flat_map(&:values).none?(nil) %>
+  <%# debugger %>
   <% if game.finished %>
-    <h2><%= game.winner %> wins!</h2>
-    
-    <table class="tic-tac-toe-board">
-    <% game.state.each do |row_index, row| %>
-      <tr>
-        <% row.each do |col_index, cell| %>
-          <td class="cell">
-            <%= cell %>
-          </td>
-        <% end %>
-      </tr>
-    <% end %>
-  </table>
-  
+    <h2 class="text-2xl font-bold text-center mb-4">
+      <%= game.winner == game.creator_symbol ? game.creator.name : game.joiner.name %> wins!
+    </h2>
   <% else %>
-  <div class="game-info">
-    <p>Current Turn: <%= game.current_symbol.upcase %></p>
-  </div>
-  
-  
-  
-  <table class="tic-tac-toe-board">
+    <h2 class="text-2xl font-bold text-center mb-4">It's a tie.</h2>
+  <% end %>
+
+  <div class="grid grid-cols-3 gap-0 w-64 h-64 mx-auto ">
     <% game.state.each do |row_index, row| %>
-      <tr>
-        <% row.each do |col_index, cell| %>
-          <td class="cell">
-            <% if cell.nil? && user == ( game.current_symbol == game.creator_symbol ? game.creator : game.joiner) %>
-              
-              <%= link_to ' ', move_game_path(game, row: row_index, col: col_index), data:{turbo_method: :patch} %>
-
-            <% else %>
-              <%= cell %>
-            <% end %>
-          </td>
-        <% end %>
-      </tr>
+      <% row.each do |col_index, cell| %>
+        <div class="w-full h-full border border-gray-300 flex items-center justify-center text-xl font-semibold">
+          <%= cell %>
+        </div>
+      <% end %>
     <% end %>
-  </table>
+  </div>
 
+<% else %>
+  <div class="text-center mb-4">
+    <p class="text-lg font-semibold text-gray-700">Current Turn: <%= game.current_symbol.upcase %></p>
+  </div>
+
+  <div class="grid grid-cols-3 gap-1 w-64 h-64 mx-auto">
+    <% game.state.each do |row_index, row| %>
+      <% row.each do |col_index, cell| %>
+        <div class="w-full h-full border border-gray-300 flex items-center justify-center text-xl font-semibold cursor-pointer hover:bg-gray-100">
+          <% if cell.nil? && user == (game.current_symbol == game.creator_symbol ? game.creator : game.joiner) %>
+            <%= link_to ' ', move_game_path(game, row: row_index, col: col_index), data: { turbo_method: :patch }, class: 'w-full h-full' %>
+          <% else %>
+            <%= cell %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 <% end %>
