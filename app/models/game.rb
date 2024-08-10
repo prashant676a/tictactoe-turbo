@@ -4,13 +4,7 @@ class Game < ApplicationRecord
   belongs_to :joiner, class_name: 'User', optional: true
   
   before_validation(on: :create) do
-    self.state = {
-      0 => { 0 => nil, 1 => nil, 2 => nil },
-      1 => { 0 => nil, 1 => nil, 2 => nil },
-      2 => { 0 => nil, 1 => nil, 2 => nil }
-    }
-
-
+    self.state = initial_state
   end
 
 
@@ -47,6 +41,21 @@ class Game < ApplicationRecord
     end
   
     nil
+  end
+
+  def reset
+    self.state = initial_state
+    self.current_symbol = creator_symbol
+    self.finished = false 
+    self.save!
+  end
+
+  def initial_state
+    {
+      0 => { 0 => nil, 1 => nil, 2 => nil },
+      1 => { 0 => nil, 1 => nil, 2 => nil },
+      2 => { 0 => nil, 1 => nil, 2 => nil }
+    }
   end
 
   after_update_commit -> {broadcast_replace_to "games", locals: {game: self, user:Current.user == self.creator ? self.joiner : self.creator}}

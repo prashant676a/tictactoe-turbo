@@ -13,19 +13,27 @@
 
   <body class="bg-gray-100 text-gray-900 font-sans leading-normal">
     <header class="bg-white shadow-md">
-      <nav class="container mx-auto p-4 flex items-center justify-between">
-        <div>
-          <% if user_signed_in? %>
-            <%= link_to 'Home', root_path, class: "text-blue-500 hover:text-blue-700 mx-2" %> |
-            <%# link_to 'New Game', new_game_path, class: "text-blue-500 hover:text-blue-700 mx-2" %> 
-            <%# link_to 'Join Game', join_games_path, class: "text-blue-500 hover:text-blue-700 mx-2" %> 
-            <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: "text-red-500 hover:text-red-700 mx-2" %>
-          <% else %>
-            <%= link_to 'Log In', new_user_session_path, class: "text-blue-500 hover:text-blue-700 mx-2" %> |
-            <%= link_to 'Sign Up', new_user_registration_path, class: "text-blue-500 hover:text-blue-700 mx-2" %>
-          <% end %>
-        </div>
-      </nav>
+
+      <nav class="bg-white shadow-md">
+  <div class="container mx-auto p-4 flex items-center justify-between">
+    <div class="flex space-x-4">
+      <% if user_signed_in? %>
+        <%= link_to 'Home', root_path, class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+        <%= link_to 'New Game', new_game_path, class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+      <% else %>
+        <%= link_to 'Log In', new_user_session_path, class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+        <%= link_to 'Sign Up', new_user_registration_path, class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+      <% end %>
+    </div>
+    <% if user_signed_in? %>
+      <div class="ml-auto">
+        <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, data: { turbo_method: :delete }, class: "text-red-500 hover:text-red-700 font-semibold" %>
+      </div>
+    <% end %>
+  </div>
+</nav>
+
+
     </header>
 
     <main class="container mx-auto p-4">

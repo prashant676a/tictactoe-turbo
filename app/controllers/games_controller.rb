@@ -13,6 +13,17 @@ class GamesController < ApplicationController
     @game = Game.new
   end
 
+  def restart
+    @game = Game.find(params[:id])
+    
+    if @game.reset
+      broadcast_game_update(@game)
+      redirect_to @game, notice: 'Game has been reset!'
+    else
+      redirect_to @game, alert: 'Failed to reset the game.'
+    end
+  end
+
   def create
     @game = Game.new(game_params)
     @game.creator = current_user

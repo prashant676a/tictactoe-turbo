@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   resources :games, only: %i[index new create show update] do
     member do
+      post 'restart'
       get 'join'
       patch 'move/:row/:col', to: 'games#move', as: 'move'
     end
