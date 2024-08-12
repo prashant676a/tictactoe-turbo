@@ -63,3 +63,6 @@ end
 
 gem "devise", "~> 4.9"
 gem 'cssbundling-rails'
+# gem "friendly_id", "~> 5.5"
+
+gem "digest", "~> 3.1"

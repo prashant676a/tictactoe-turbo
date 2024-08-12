@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   include ActionView::RecordIdentifier
   
   before_action :authenticate_user!
-  before_action :set_game, only: [:show, :update, :move]
+  before_action :set_game, only: [:show, :update, :move,:restart]
   before_action :ensure_joined, only: [:show]
 
 
@@ -14,15 +14,17 @@ class GamesController < ApplicationController
   end
 
   def restart
-    @game = Game.find(params[:id])
-    
+    Current.user = current_user
     if @game.reset
+      respond_to do |format|
+        format.html { redirect_to @game}
+      end
       broadcast_game_update(@game)
-      redirect_to @game, notice: 'Game has been reset!'
     else
       redirect_to @game, alert: 'Failed to reset the game.'
     end
   end
+  
 
   def create
     @game = Game.new(game_params)
@@ -37,13 +39,26 @@ class GamesController < ApplicationController
   end
 
   def show
+    Current.user = current_user
+    #can make directly user can visit with link in this page(if only creator exists implement join method here)
+  end
+
+  def play
+    #to implement random player's match making
     
+    #check any games where creator is only present but not joiner (use .last for latest ones)
+    #or can add status field in game model to check if atleast one player is on the game and when 0 players are status:inactive
+    
+    #if above condition is not met create game and wait for other players to join
+    
+    #whichever is the case need to render/ redirect_to show page 
+    #but don't show to url to share instead wait for 30 seconds and 
   end
 
   def join
     if params[:game_id].present?
       game_id = params[:game_id].split('/').last
-      @game = Game.find_by(id: game_id)
+      @game = Game.find_by(slug: game_id)
       if @game && @game.joiner.nil? && @game.creator != current_user
         @game.joiner = current_user
         @game.joiner_symbol = @game.creator_symbol == "X" ? "O" : "X"
@@ -52,7 +67,6 @@ class GamesController < ApplicationController
           Current.user = current_user
           respond_to do |format|
             format.html { redirect_to @game }
-            format.turbo_stream {render turbo_stream: turbo_stream.replace(@game, partial: 'games/game', locals: { game: @game, user: Current.user }) }
           end
           broadcast_game_update(@game)
         else
@@ -67,12 +81,15 @@ class GamesController < ApplicationController
   end
 
   def update
-    # broadcast_game_update(@game)
-    @game.update(game_params)
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to @game }
+    Current.user = current_user
+
+    if @game.update(game_params)
+      respond_to do |format|
+        format.html { redirect_to @game }
+      end
+      broadcast_game_update(@game)
     end
+
   end
 
   def move
@@ -85,7 +102,6 @@ class GamesController < ApplicationController
       broadcast_game_update(@game)
 
       respond_to do |format|
-        # format.turbo_stream
         format.html{redirect_to @game}
       end
 
@@ -99,7 +115,7 @@ class GamesController < ApplicationController
   private
 
   def set_game
-    @game = Game.find(params[:id])
+    @game = Game.find_by_slug(params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to games_path, alert: 'Game not found.'
   end
@@ -111,11 +127,12 @@ class GamesController < ApplicationController
   def broadcast_game_update(game)
     Turbo::StreamsChannel.broadcast_replace_to(
       game,
-      target: dom_id(game),  # Now you can use dom_id
+      target: dom_id(game),
       partial: 'games/game',
       locals: { game: game, user: Current.user == game.creator ? game.joiner : game.creator }
     )
   end
+  
 
   def ensure_joined
     unless @game && (@game.creator == current_user || @game.joiner == current_user)
